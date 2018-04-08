@@ -2,6 +2,7 @@ import numpy as np
 import xgboost as xgb
 import pandas as pd
 from ml_metrics import quadratic_weighted_kappa
+from sklearn.metrics import confusion_matrix
 
 # load data
 print('Loading data...')
@@ -45,6 +46,9 @@ print('Done.')
 # get preds
 train_preds = gbt.predict(train_matrix, ntree_limit=gbt.best_iteration)
 print('Train score is:', quadratic_weighted_kappa(np.round(np.clip(train_preds, 1, 8)), train['Response']))
+
+cm = confusion_matrix(train['Response'].values, np.round(np.clip(train_preds, 1, 8)).astype(int))
+print("Confusion matrix: \n%s" % cm)
 test_preds = gbt.predict(test_matrix, ntree_limit=gbt.best_iteration)
 
 # result without optimization
